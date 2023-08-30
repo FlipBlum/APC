@@ -1,0 +1,6 @@
+.img-fluid {
+    max-height: 200px;
+    /* oder jede gewünschte Höhe */
+    margin-bottom: 10px;
+    /* Abstand zwischen den Bildern */
+}

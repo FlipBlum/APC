@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <form method="post" enctype="multipart/form-data">
+        <div class="row mt-4">
+            {% for image in images %}
+            <div class="col-6">
+                <img src="{{ image.path }}" alt="{{ image.alt }}" class="img-fluid">
+                <div>
+                    Klassifizierung für {{ image.alt }}:
+                    <select name="classification">
+                        <option value="daisy">Daisy</option>
+                        <option value="dandelion">Löwenzahn</option>
+                        <option value="sunflower">Sonnenblume</option>
+                        <option value="roses">Rose</option>
+                        <option value="tulips">Tulpe</option>
+                    </select>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mt-3">
+            <input type="submit" value="Bilder klassifizieren">
+        </div>
+    </form>
+</div>
+{% endblock %}
