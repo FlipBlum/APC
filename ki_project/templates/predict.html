@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Predictions</title>
+</head>
+
+<body>
+    <h1>Image Predictions</h1>
+    <ul>
+        {% for image in images %}
+        <li>
+            <img src="{{ image.path }}" alt="{{ image.alt }}" width="200">
+            <p>Prediction: {{ image.prediction }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

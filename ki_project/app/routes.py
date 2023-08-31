@@ -8,11 +8,6 @@ from collections import namedtuple
 from kiModel import SimpleCNN
 import torch
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = SimpleCNN() # Erzeuge eine Instanz des Modells
-model.load_state_dict(torch.load("flowerprediction_v2.pth")) # Lade das state dictionary
-model.to(device)
-model.eval()
 
 # Google Drive Authentifizierung
 gauth = GoogleAuth()
@@ -77,3 +72,32 @@ def index():
         return redirect(url_for('main.index'))
 
     return render_template('index.html', images=images)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = SimpleCNN()  # Erzeuge eine Instanz des Modells
+    model.load_state_dict(torch.load("flowerprediction_v2.pth"))  # Lade das state dictionary
+    model.to(device)
+    model.eval()
+
+    image_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'images', 'predict')
+    Image = namedtuple('Image', ['path', 'alt', 'prediction'])
+    image_files = [f for f in os.listdir(image_folder) if os.path.isfile(os.path.join(image_folder, f))]
+
+    images_with_predictions = []
+    for image_file in image_files:
+        image_path = os.path.join(image_folder, image_file)
+        
+        # Hier würden Sie Ihren Vorverarbeitungscode und den Inferenzcode hinzufügen, 
+        # um Vorhersagen für das Bild zu erhalten. Zum Beispiel:
+        # image_tensor = preprocess_image(image_path) 
+        # prediction = model(image_tensor)
+        
+        # Zum Zweck dieses Beispiels werde ich einfach einen Dummy-Wert hinzufügen:
+        prediction = "Flower Type X"
+        
+        image = Image(url_for('static', filename=f'images/predict/{image_file}'), f'Image {image_file}', prediction)
+        images_with_predictions.append(image)
+
+    return render_template('predict.html', images=images_with_predictions)
