@@ -3,9 +3,17 @@ from .models import RatedImage
 from . import db
 import os
 from collections import namedtuple
-from CNNModel import SimpleCNN
+from simpleCNN import SimpleCNN
 import torch
 from PIL import Image
+from torchvision import transforms
+from constanten import CLASSES
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = SimpleCNN()  # Erzeuge eine Instanz des Modells
+model.load_state_dict(torch.load("ringprediction_v2.pth"))  # Lade das state dictionary
+model.to(device)
+model.eval()
 
 main = Blueprint('main', __name__)
 train_path = "/Users/philippblum/Desktop/coding/ki_project/static/images/train"
@@ -66,14 +74,8 @@ def index():
 
     return render_template('index.html', images=images)
 
-@app.route('/predict', methods=['POST'])
+@main.route('/predict', methods=['POST'])
 def predict():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = SimpleCNN()  # Erzeuge eine Instanz des Modells
-    model.load_state_dict(torch.load("flowerprediction_v2.pth"))  # Lade das state dictionary
-    model.to(device)
-    model.eval()
-
     image_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'images', 'predict')
     Image = namedtuple('Image', ['path', 'alt', 'prediction'])
     image_files = [f for f in os.listdir(image_folder) if os.path.isfile(os.path.join(image_folder, f))]
@@ -82,12 +84,15 @@ def predict():
     for image_file in image_files:
         image_path = os.path.join(image_folder, image_file)
         
-        image_tensor = preprocess_image(image_path)
-        prediction_index = get_prediction(model, image_tensor, device)
-        prediction_label = train_data.classes[prediction_index]  # Der Name der Klasse basierend auf dem Index
+        try:
+            image_tensor = preprocess_image(image_path)
+            prediction_index = get_prediction(model, image_tensor, device)
+            prediction_label = CLASSES[prediction_index]  # Der Name der Klasse basierend auf dem Index
+        except Exception as e:
+            print(f"Fehler bei der Verarbeitung von {image_file}: {e}")
+            prediction_label = "Fehler"
         
         image = Image(url_for('static', filename=f'images/predict/{image_file}'), f'Image {image_file}', prediction_label)
         images_with_predictions.append(image)
 
     return render_template('predict.html', images=images_with_predictions)
-
