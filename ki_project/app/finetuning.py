@@ -3,24 +3,24 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
-from kiModel import SimpleCNN
+from CNNModel import SimpleCNN
 
 # Erstellen Sie ein neues Experiment-Objekt
-experiment = Experiment(api_key="0NPgf4vYBtZjxKoE50bCNAbuL", project_name="Flower Prediction APP")
+experiment = Experiment(api_key="0NPgf4vYBtZjxKoE50bCNAbuL", project_name="MachineVision")
 
 # Daten-Vorbereitung
 transform = transforms.Compose([transforms.Resize((180, 180)), transforms.ToTensor()])
-train_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/FlowerPredictionAPP/flower_photos/train", transform=transform)
+train_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/ki_project/static/images/train", transform=transform)
 print(train_data)
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=True)
-val_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/FlowerPredictionAPP/flower_photos/validate", transform=transform)
+val_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/ki_project/static/images/validate", transform=transform)
 print(val_data)
 val_loader = torch.utils.data.DataLoader(val_data, batch_size=32, shuffle=False)
 epochenanzahl = 4
 
 model = SimpleCNN()
 
-model.load_state_dict(torch.load("flowerprediction.pth"))
+model.load_state_dict(torch.load("ringprediction.pth"))
 
 # Verlust und Optimierer
 criterion = nn.CrossEntropyLoss()
@@ -58,7 +58,7 @@ for epoch in range(epochenanzahl):
   
     print(f"Ein Epochendurchlauf ist fertig!")
   
-torch.save(model.state_dict(), "flowerprediction_v2.pth")
+torch.save(model.state_dict(), "ringprediction_v2.pth")
 
 # End the experiment
 experiment.end()

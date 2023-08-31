@@ -3,11 +3,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
-
-from kiModel import SimpleCNN  # Importieren der Modelldefinition
+from CNNModel import SimpleCNN  # Importieren der Modelldefinition
 
 # Erstellen Sie ein neues Experiment-Objekt
-experiment = Experiment(api_key="0NPgf4vYBtZjxKoE50bCNAbuL", project_name="Flower Prediction APP")
+experiment = Experiment(api_key="0NPgf4vYBtZjxKoE50bCNAbuL", project_name="MachineVision")
+epochenanzahl = int(input("Geben Sie die Anzahl der Epochen ein: "))
 
 def main():
     # Daten-Vorbereitung
@@ -24,8 +24,6 @@ def main():
     # Verlust und Optimierer
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters())
-
-    epochenanzahl = 4
 
     # Training
     for epoch in range(epochenanzahl):
@@ -60,7 +58,7 @@ def main():
       
         print(f"Ein Epochendurchlauf ist fertig!")
       
-    torch.save(model.state_dict(), "flowerprediction.pth")
+    torch.save(model.state_dict(), "ringprediciton.pth")
 
     # End the experiment
     experiment.end()

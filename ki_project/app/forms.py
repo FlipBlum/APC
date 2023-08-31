@@ -5,6 +5,6 @@ from wtforms import RadioField, SubmitField
 from flask_wtf.file import FileField, FileRequired
 
 class ClassificationForm(FlaskForm):
-    classification = RadioField('Bewertung', choices=[('daisy', 'Daisy'), ('dandelion', 'Löwenzahn'), ('roses', 'Rose'), ('sunflower', 'Sonnenblume'), ('tulips', 'Tulpe')])
+    classification = RadioField('Bewertung', choices=[('gut', 'Gut'), ('schlecht', 'Schlecht')])
     submit = SubmitField('Absenden')
     image = FileField('Bilder hochladen', validators=[FileRequired()], render_kw={"multiple": True})
