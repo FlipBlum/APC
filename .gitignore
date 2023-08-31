@@ -266,4 +266,5 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,flaskmyenv/
 
-.client_secrets.json
+#add client_secrets.json to gitignore
+client_secrets.json
