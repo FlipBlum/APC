@@ -1,8 +1,7 @@
 .DS_Store
 
 #ignore myenv
-myenv/
-```
+
 # Created by https://www.toptal.com/developers/gitignore/api/python,flask
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,flask
 
@@ -233,6 +232,8 @@ cython_debug/
 # SageMath parsed files
 
 # Environments
+myenv/
+```
 
 # Spyder project settings
 
