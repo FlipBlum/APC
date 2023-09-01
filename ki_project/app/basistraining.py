@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
-from simpleCNN import SimpleCNN  # Importieren der Modelldefinition
+from cnn import SimpleCNN  # Importieren der Modelldefinition
 
 # Erstellen Sie ein neues Experiment-Objekt
 experiment = Experiment(api_key="0NPgf4vYBtZjxKoE50bCNAbuL", project_name="MachineVision")
@@ -12,10 +12,10 @@ epochenanzahl = int(input("Geben Sie die Anzahl der Epochen ein: "))
 def main():
     # Daten-Vorbereitung
     transform = transforms.Compose([transforms.Resize((180, 180)), transforms.ToTensor()])
-    train_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/ki_project/static/images/train", transform=transform)
+    train_data = datasets.ImageFolder("/Users/philippblum/Documents/GitHub/APC/ki_project/static/images/train", transform=transform)
     print(train_data)
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=True)
-    val_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/ki_project/static/images/validate", transform=transform)
+    val_data = datasets.ImageFolder("/Users/philippblum/Documents/GitHub/APC/ki_project/static/images/validate", transform=transform)
     print(val_data)
     val_loader = torch.utils.data.DataLoader(val_data, batch_size=32, shuffle=False)
 

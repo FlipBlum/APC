@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
-from simpleCNN import SimpleCNN
+from cnn import SimpleCNN
 
 # Erstellen Sie ein neues Experiment-Objekt
 experiment = Experiment(api_key="0NPgf4vYBtZjxKoE50bCNAbuL", project_name="MachineVision")
