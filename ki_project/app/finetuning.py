@@ -15,16 +15,16 @@ print(train_data)
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=True)
 val_data = datasets.ImageFolder("/Users/philippblum/Desktop/coding/ki_project/static/images/validate", transform=transform)
 print(val_data)
-val_loader = torch.utils.data.DataLoader(val_data, batch_size=32, shuffle=False)
+val_loader = torch.utils.data.DataLoader(val_data, batch_size=32, shuffle=False) # shuffle=False, da wir die Reihenfolge der Bilder beibehalten wollen
 epochenanzahl = 4
 
 model = SimpleCNN()
 
-model.load_state_dict(torch.load("ringprediction.pth"))
+model.load_state_dict(torch.load("/Users/philippblum/Documents/GitHub/APC/ki_project/app/ringprediciton.pth")) # Lade das state dictionary
 
 # Verlust und Optimierer
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss() # nn.NLLLoss()
+optimizer = optim.Adam(model.parameters()) # optim.SGD(model.parameters(), lr=0.01)
 
 for epoch in range(epochenanzahl):
     model.train()

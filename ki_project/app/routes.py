@@ -7,8 +7,10 @@ from collections import namedtuple
 import torch
 from PIL import Image
 from torchvision import transforms
+import serial
 
-
+# Hier öffnen Sie den seriellen Port. Der Portname (z.B. 'COM3' oder '/dev/ttyUSB0') hängt von Ihrem System ab.
+# arduino = serial.Serial('COM3', 9600)  # Ersetzen Sie 'COM3' durch den richtigen Portnamen
 
 CLASS_LABELS = [('gut', 'Gut'), ('schlecht', 'Schlecht')]
 CLASSES = [label[0] for label in CLASS_LABELS]
@@ -17,7 +19,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SimpleCNN()  # Erzeuge eine Instanz des Modells
 train_path = "/Users/philippblum/Documents/GitHub/APC/ki_project/static/images/train"
 validate_path = "/Users/philippblum/Documents/GitHub/APC/ki_project/static/images/validate"
-
 
 model.load_state_dict(torch.load("/Users/philippblum/Documents/GitHub/APC/ki_project/app/ringprediction_v2.pth"))  # Lade das state dictionary
 model.to(device)
@@ -98,8 +99,11 @@ def predict():
         
         image = Image(url_for('static', filename=f'images/predict/{image_file}'), f'Image {image_file}', prediction_label)
         if prediction_label == "schlecht":
-            #mache sachen brudi
+            # response = requests.post('http://192.168.14.133:5001/start_greifvorgang')
+            # print(response.text)
             print("schlecht")
+
+            
         images_with_predictions.append(image)
 
     return render_template('predict.html', images=images_with_predictions)
