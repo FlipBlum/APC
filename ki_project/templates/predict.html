@@ -1,20 +1,55 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-    <title>Predictions</title>
-</head>
+{% block content %}
 
-<body>
-    <h1>Image Predictions</h1>
-    <ul>
-        {% for image in images %}
-        <li>
-            <img src="{{ image.path }}" alt="{{ image.alt }}" width="200">
-            <p>Prediction: {{ image.prediction }}</p>
-        </li>
-        {% endfor %}
-    </ul>
-</body>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
 
-</html>
+    .prediction-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        /* Platz zwischen den Bildern */
+        justify-content: center;
+        /* Zentrierung der Bilder */
+    }
+
+    .prediction-item {
+        width: 22%;
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        transition: transform .2s;
+        /* Animation */
+    }
+
+    .prediction-item img {
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    .prediction-item:hover {
+        transform: scale(1.05);
+        /* Zoom-Effekt beim Überfahren mit der Maus */
+    }
+
+    .prediction-text {
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
+
+<h1 class="text-center mb-4">Image Predictions</h1>
+<div class="prediction-container">
+    {% for image in images %}
+    <div class="prediction-item">
+        <img src="{{ image.path }}" alt="{{ image.alt }}">
+        <p class="prediction-text"><strong>#{{ loop.index }}</strong> Prediction: {{ image.prediction }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

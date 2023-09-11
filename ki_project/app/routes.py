@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, Response
 from app.cnn import SimpleCNN
 from app.models import RatedImage
 from . import db
@@ -8,10 +8,10 @@ import torch
 from PIL import Image
 from torchvision import transforms
 import serial
+import queue
 
 # Hier öffnen Sie den seriellen Port. Der Portname (z.B. 'COM3' oder '/dev/ttyUSB0') hängt von Ihrem System ab.
-# arduino = serial.Serial('COM3', 9600)  # Ersetzen Sie 'COM3' durch den richtigen Portnamen
-
+arduino = serial.Serial('/dev/tty.usbmodem141101', 9600)  # Ersetzen Sie 'COM3' durch den richtigen Portnamen
 CLASS_LABELS = [('gut', 'Gut'), ('schlecht', 'Schlecht')]
 CLASSES = [label[0] for label in CLASS_LABELS]
 main = Blueprint('main', __name__)
@@ -99,8 +99,7 @@ def predict():
         
         image = Image(url_for('static', filename=f'images/predict/{image_file}'), f'Image {image_file}', prediction_label)
         if prediction_label == "schlecht":
-            # response = requests.post('http://192.168.14.133:5001/start_greifvorgang')
-            # print(response.text)
+            arduino.write(b'start')
             print("schlecht")
 
             
@@ -134,4 +133,30 @@ def savePredictImages():
     # save image to static/images/classify
     image.save(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'images', 'predict', image.filename))
     return 'Image saved'
-    
+
+buffer = queue.Queue(maxsize=10)
+
+@main.route('/upload_video', methods=['POST'])
+def upload_video():
+    file = request.files['file']
+    try:
+        buffer.put_nowait(file.read())
+    except queue.Full:
+        pass
+    return "OK"
+
+def gen():
+    """Generiert Videostream."""
+    while True:
+        frame = buffer.get()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+@main.route('/livestream')
+def livestream():
+    return render_template('livestream.html')
+
+@main.route('/video_feed')
+def video_feed():
+    """Gibt den Livestream zurück."""
+    return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
