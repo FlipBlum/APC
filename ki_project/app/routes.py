@@ -10,13 +10,17 @@ from torchvision import transforms
 import serial
 import queue
 
-# Hier öffnen Sie den seriellen Port. Der Portname (z.B. 'COM3' oder '/dev/ttyUSB0') hängt von Ihrem System ab.
-arduino = serial.Serial('/dev/tty.usbmodem141101', 9600)  # Ersetzen Sie 'COM3' durch den richtigen Portnamen
+
+# arduino = serial.Serial('/dev/tty.usbmodem141101', 9600)
+
 CLASS_LABELS = [('gut', 'Gut'), ('schlecht', 'Schlecht')]
 CLASSES = [label[0] for label in CLASS_LABELS]
+
 main = Blueprint('main', __name__)
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SimpleCNN()  # Erzeuge eine Instanz des Modells
+
 train_path = "/Users/philippblum/Documents/GitHub/APC/ki_project/static/images/train"
 validate_path = "/Users/philippblum/Documents/GitHub/APC/ki_project/static/images/validate"
 
@@ -31,12 +35,25 @@ def get_prediction(model, image_tensor, device):
         _, predicted_class = outputs.max(1)
     return predicted_class.item()
 
+#def preprocess_image(image_path):
+#    transform = transforms.Compose([transforms.Resize((180, 180)), transforms.ToTensor()])
+#    image = Image.open(image_path)
+#    image_tensor = transform(image)
+#    image_tensor = image_tensor.unsqueeze(0)  # da wir nur ein Bild haben, fügen wir eine Dimension hinzu
+#    return image_tensor
+
 def preprocess_image(image_path):
     transform = transforms.Compose([transforms.Resize((180, 180)), transforms.ToTensor()])
     image = Image.open(image_path)
+    
+    # Überprüfen Sie, ob das Bild nur einen Kanal hat und konvertieren Sie es in RGB
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+        
     image_tensor = transform(image)
     image_tensor = image_tensor.unsqueeze(0)  # da wir nur ein Bild haben, fügen wir eine Dimension hinzu
     return image_tensor
+
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -99,7 +116,7 @@ def predict():
         
         image = Image(url_for('static', filename=f'images/predict/{image_file}'), f'Image {image_file}', prediction_label)
         if prediction_label == "schlecht":
-            arduino.write(b'start')
+            #arduino.write(b'start')
             print("schlecht")
 
             
